@@ -250,6 +250,29 @@ void HAL_ADC_MspDeInit(ADC_HandleTypeDef* adcHandle)
   }
 } 
 
+
+
+void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
+{
+	printf("\r");
+	dmaflage=1;
+	HAL_ADC_Stop_DMA(&hadc1);
+}
+
+u16 adcfilter(u16 number,u8 channel)
+{
+	u8 i=0;
+	u32 tempe=0;
+	u32 sum=0;
+	for(i=0;i<number;i++)
+	{
+		tempe=uhADCxConvertedValue[i][channel];
+		sum+=tempe;
+	}
+	return (u32)(sum/number);
+}
+
+
 /* USER CODE BEGIN 1 */
 
 /* USER CODE END 1 */

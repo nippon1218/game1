@@ -39,9 +39,9 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "usart.h"
-
 #include "gpio.h"
 #include "dma.h"
+#include "timer.h"
 
 /* USER CODE BEGIN 0 */
 
@@ -148,6 +148,35 @@ void HAL_UART_MspInit(UART_HandleTypeDef* uartHandle)
 
   /* USER CODE END USART2_MspInit 1 */
   }
+	
+	if(uartHandle->Instance==USART3)
+  {
+    __USART3_CLK_ENABLE();
+		__HAL_RCC_GPIOC_CLK_ENABLE();	
+    /**USART3 GPIO Configuration    
+    PC4     ------> USART3_TX
+    PC5     ------> USART3_RX 
+    */
+    GPIO_InitStruct.Pin = GPIO_PIN_4|GPIO_PIN_5;
+    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+    GPIO_InitStruct.Pull = GPIO_PULLUP;
+    GPIO_InitStruct.Speed = GPIO_SPEED_HIGH;
+    GPIO_InitStruct.Alternate = GPIO_AF7_USART3;
+    HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+
+		__HAL_UART_ENABLE_IT(uartHandle,UART_IT_RXNE);		//开启接收中断
+		HAL_NVIC_EnableIRQ(USART3_IRQn);				//使能USART2中断
+		HAL_NVIC_SetPriority(USART3_IRQn,2,3);			//抢占优先级1，子优先级3
+
+		TIM7_Init(3000-1,3000-1);		                //100ms中断?????
+		USART3_RX_LEN=0;		                            //清零
+		TIM7->CR1&=~(1<<0);                             //关闭定时器7			
+  /* USER CODE BEGIN USART2_MspInit 1 */
+
+  /* USER CODE END USART2_MspInit 1 */
+  }
+	
+	
 }
 
 void HAL_UART_MspDeInit(UART_HandleTypeDef* uartHandle)
@@ -177,6 +206,90 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* uartHandle)
   /* USER CODE END USART2_MspDeInit 1 */
   }
 } 
+
+
+void USART3_IRQHandler(void)                	
+{ 
+	u8 res;	      
+	if(__HAL_UART_GET_FLAG(&huart3,UART_FLAG_RXNE)!=RESET)//接收到数据
+	{	 
+		res=USART3->RDR;
+		if((USART3_RX_LEN&(1<<15))==0)               //接收完的一批数据,还没有被处理,则不再接收其他数据
+		{ 
+			if(USART3_RX_LEN<USART3_MAX_RECV_LEN)	    //还可以接收数据
+			{
+				TIM7->CNT=0;         				//计数器清空	
+				if(USART3_RX_LEN==0) 				//使能定时器7的中断 
+				{
+					TIM7->CR1|=1<<0;     			//使能定时器7
+				}
+				USART3_RX_BUF[USART3_RX_LEN++]=res;	//记录接收到的值
+			}
+			else 
+			{
+				USART3_RX_LEN|=1<<15;			    //强制标记接收完成
+			} 
+		}
+	}  				 											 
+}  
+
+
+
+
+void u2_printf(char* fmt,...)  
+{  
+	u16 i,j; 
+	va_list ap; 
+	va_start(ap,fmt);
+	vsprintf((char*)USART2_TX_BUF,fmt,ap);
+	va_end(ap);
+	i=strlen((const char*)USART2_TX_BUF);		//此次发送数据的长度
+	for(j=0;j<i;j++)							//循环发送数据
+	{
+		while((USART2->ISR&0X40)==0);			//循环发送,直到发送完毕   
+		USART2->TDR=USART2_TX_BUF[j];  
+	} 
+}
+
+void u3_printf(char* fmt,...)  
+{  
+	u16 i,j; 
+	va_list ap; 
+	va_start(ap,fmt);
+	vsprintf((char*)USART3_TX_BUF,fmt,ap);
+	va_end(ap);
+	i=strlen((const char*)USART3_TX_BUF);		//此次发送数据的长度
+	for(j=0;j<i;j++)							//循环发送数据
+	{
+		while((USART3->ISR&0X40)==0);			//循环发送,直到发送完毕   
+		USART3->TDR=USART3_TX_BUF[j];  
+	} 
+}
+
+void uartdamget(void)
+{
+	if(recv_end_flag ==1)
+	{
+
+		printf("\nrx_len=%d\r\n",rx_len);
+
+		for(int i=0;i<rx_len;i++)
+		{
+				printf("%c",rx_buffer[i]);
+		}
+		printf("\r\n");	  
+		for(int i = 0; i < rx_len ; i++) rx_buffer[i]=0;
+		rx_len=0;
+		recv_end_flag=0;
+	}
+	HAL_UART_Receive_DMA(&huart2,(uint8_t*)rx_buffer,BUFFER_SIZE);
+}
+
+
+
+
+
+
 
 /* USER CODE BEGIN 1 */
 

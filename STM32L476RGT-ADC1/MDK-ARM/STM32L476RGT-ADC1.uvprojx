@@ -539,6 +539,41 @@
               <FileType>1</FileType>
               <FilePath>../Src/gpio.c</FilePath>
             </File>
+            <File>
+              <FileName>myiic.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\myiic.c</FilePath>
+            </File>
+            <File>
+              <FileName>sys.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\sys.c</FilePath>
+            </File>
+            <File>
+              <FileName>delay.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\delay.c</FilePath>
+            </File>
+            <File>
+              <FileName>timer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\timer.c</FilePath>
+            </File>
+            <File>
+              <FileName>bma222.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\bma222.c</FilePath>
+            </File>
+            <File>
+              <FileName>tmp006.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\tmp006.c</FilePath>
+            </File>
+            <File>
+              <FileName>esp8266.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\esp8266.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

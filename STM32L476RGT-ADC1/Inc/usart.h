@@ -47,6 +47,9 @@
 #include "stm32l4xx_hal.h"
 #include "main.h"
 #include "sys.h"
+#include "stdarg.h"	 	 
+#include "stdio.h"	 	 
+#include "string.h"		 
 /* USER CODE BEGIN Includes */
 
 
@@ -78,7 +81,10 @@ extern u16 USART3_RX_LEN;   						//接收数据状态
 extern void _Error_Handler(char *, int);
 
 void MX_USART2_UART_Init(void);
-
+void MX_USART3_UART_Init(void);
+void u2_printf(char* fmt,...) ;
+void u3_printf(char* fmt,...) ;
+void uartdamget(void);
 /* USER CODE BEGIN Prototypes */
 
 /* USER CODE END Prototypes */

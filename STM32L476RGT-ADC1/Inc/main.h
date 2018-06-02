@@ -45,6 +45,7 @@
 #include "stdlib.h"
 #include "string.h"
 #include "stdint.h"
+#include "sys.h"
 
 /* Includes ------------------------------------------------------------------*/
 
@@ -68,15 +69,28 @@
 #ifdef __cplusplus
  extern "C" {
 #endif
+	 
+/* USER CODE BEGIN Includes */
+#define NB  30
+#define CHN  4
+//#define CHN  5
+#define ADCNB NB*CHN
+#define BUFFER_SIZE 256
 
+#define u8 uint8_t
+#define u16 uint16_t
+#define u32 uint32_t
+	 
 extern uint8_t rx_len;
 	 
 extern uint8_t bootfirst;
 extern uint8_t recv_end_flag;
 extern uint16_t rx_buffer[256];
-	 
-void _Error_Handler(char *, int);
+extern volatile int dmaflage;
+extern u16 uhADCxConvertedValue[NB][CHN];
 
+	 void _Error_Handler(char *, int);	
+	 
 #define Error_Handler() _Error_Handler(__FILE__, __LINE__)
 #ifdef __cplusplus
 }

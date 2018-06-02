@@ -46,7 +46,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "stm32l4xx_hal.h"
 #include "main.h"
-
+#include "sys.h"
 /* USER CODE BEGIN Includes */
 
 /* USER CODE END Includes */
@@ -60,7 +60,7 @@ extern ADC_HandleTypeDef hadc1;
 extern void _Error_Handler(char *, int);
 
 void MX_ADC1_Init(void);
-
+u16 adcfilter(u16 number,u8 channel);
 /* USER CODE BEGIN Prototypes */
 
 /* USER CODE END Prototypes */

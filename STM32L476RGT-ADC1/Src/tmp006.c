@@ -1,7 +1,7 @@
 #include "tmp006.h"
 
 
-u8 tmp006_Init(void)
+void tmp006_Init(void)
 {	
 	 IIC_Init();			//IIC≥ı ºªØ 	
 }
