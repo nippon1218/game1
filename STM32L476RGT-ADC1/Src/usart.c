@@ -48,7 +48,17 @@
 /* USER CODE END 0 */
 
 UART_HandleTypeDef huart2;
+UART_HandleTypeDef huart3;
 DMA_HandleTypeDef hdma_usart2_rx;
+
+u16 USART2_RX_LEN=0;
+u16 USART3_RX_LEN=0;
+
+u8 USART2_RX_BUF[USART2_MAX_RECV_LEN]; 
+u8 USART3_RX_BUF[USART3_MAX_RECV_LEN];
+__align(8) u8 USART2_TX_BUF[USART2_MAX_SEND_LEN]; 	//发送缓冲,最大USART2_MAX_SEND_LEN字节 
+__align(8) u8 USART3_TX_BUF[USART3_MAX_SEND_LEN]; 	//发送缓冲,最大USART2_MAX_SEND_LEN字节 
+
 
 /* USART2 init function */
 
@@ -71,6 +81,24 @@ void MX_USART2_UART_Init(void)
   }
 
 }
+
+void MX_USART3_UART_Init(void)
+{
+  huart3.Instance = USART3;
+  huart3.Init.BaudRate = 115200;
+  huart3.Init.WordLength = UART_WORDLENGTH_8B;
+  huart3.Init.StopBits = UART_STOPBITS_1;
+  huart3.Init.Parity = UART_PARITY_NONE;
+  huart3.Init.Mode = UART_MODE_TX_RX;
+  huart3.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+  huart3.Init.OverSampling = UART_OVERSAMPLING_16;
+  huart3.Init.OneBitSampling = UART_ONEBIT_SAMPLING_DISABLED;
+  huart3.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
+  HAL_UART_Init(&huart3);
+}
+
+
+
 
 void HAL_UART_MspInit(UART_HandleTypeDef* uartHandle)
 {

@@ -3,7 +3,7 @@
 ////////////////////////////////////////////////////////////////////////////////// 	 
 //如果使用ucos,则包括下面的头文件即可.
 #if SYSTEM_SUPPORT_OS
-#include "includes.h"					//ucos 使用	  
+#include "includes.h"	
 #endif
 
 static u32 fac_us=0;							//us延时倍乘数

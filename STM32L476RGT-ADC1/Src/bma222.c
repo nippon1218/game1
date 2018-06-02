@@ -34,7 +34,6 @@ void bma222_ReadAcc(void)
 	IIC_Read_Byte(1); 
 	bmadata[2]=IIC_Read_Byte(0); 		
 	IIC_Stop();                     //产生一个停止条件 	
-	
 }
 
 
