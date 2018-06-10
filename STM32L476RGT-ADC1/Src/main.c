@@ -131,7 +131,7 @@ int main(void)
 				Conf_Read = tmp006_ReadTwoByte(0x02);  
 		} while ((Conf_Read&0x0080) != 0x0080); 
 		 Tdie_Temp = tmp006_ReadTwoByte(0x01) ;
-		u2_printf("ÎÂ¶È£º%d\r\n",Tdie_Temp);
+		u2_printf("temp£º%d\r\n",Tdie_Temp);
 	 
 		bma222_ReadAcc();
 		u2_printf("x£º%d\r\n",bmadata[0]);
