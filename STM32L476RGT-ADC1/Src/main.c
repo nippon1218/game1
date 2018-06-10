@@ -111,7 +111,8 @@ int main(void)
 
   while (1)
   {
-		delay_ms(350);
+		delay_us(1000000);
+//		u2_printf("********sony\r\n");
 	 if(dmaflage==1)
 	 {
 		 dmaflage=0;
@@ -122,7 +123,6 @@ int main(void)
 			vcc[a]=0; 
 		 }
 		  u2_printf("\r");
-
 		 HAL_ADC_Start_DMA(&hadc1, (uint32_t*)&uhADCxConvertedValue, ADCNB);	
 	 }
 	 
