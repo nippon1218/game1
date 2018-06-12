@@ -49,7 +49,9 @@
 #include "tmp006.h"
 #include "bma222.h"
 #include "esp8266.h"
-
+#include "mpu6050.h"
+#include "inv_mpu.h"
+#include "inv_mpu_dmp_motion_driver.h" 
 
 #define u8 uint8_t
 #define u16 uint16_t
@@ -82,9 +84,10 @@ u16 uhADCxConvertedValue[NB][CHN];
 volatile int dmaflage=0;
 float vcc[CHN]={0};
 
-
 int main(void)
 {
+	u8 flag;
+	u8 t=0,report=1;			//默认开启上报？？？
 	u16 m=0;
 	u8 i;
 	u8 ID_num[12];
@@ -93,7 +96,13 @@ int main(void)
 	u16 Vobj_Read;  
 	float Vobj;  
 	float Tdie; 
-
+	float pitch,roll,yaw; 		//欧拉角
+	short aacx,aacy,aacz;		//加速度传感器原始数据
+	short gyrox,gyroy,gyroz;	//陀螺仪原始数据
+	short temp;					//温度
+	
+	
+	
   HAL_Init();
   SystemClock_Config();
 	delay_init(10);
@@ -103,7 +112,22 @@ int main(void)
   MX_ADC1_Init();
   MX_USART2_UART_Init();
 	MX_USART3_UART_Init();
-	ESP8266_AP_Init(4);
+	
+	while(MPU1_Init())
+	{
+		u2_printf("MPU_Init()\r\n");
+		delay_us(1000000);
+	
+	}					//初始化MPU6050
+	
+	while(mpu_dmp_init())
+	{
+		u2_printf("mpu_dmp_init()\r\n");
+		delay_us(1000000);
+	}
+	
+	
+//	ESP8266_AP_Init(4);
 
 	HAL_ADCEx_Calibration_Start(&hadc1, ADC_SINGLE_ENDED);
 	HAL_ADC_Start_DMA(&hadc1, (uint32_t*)&uhADCxConvertedValue, ADCNB);
@@ -112,34 +136,87 @@ int main(void)
   while (1)
   {
 		delay_us(1000000);
-//		u2_printf("********sony\r\n");
-	 if(dmaflage==1)
-	 {
+
+		if(dmaflage==1)
+		{
 		 dmaflage=0;
 		 for(int a=0;a<CHN;a++)
 		 {
-			 vcc[a]=adcfilter(NB,a)*3.3/4095;
-		  u2_printf("AD[%d]= %0.2fV ",a,vcc[a]);
+			 vcc[a]=adcfilter(NB,a)*3.3/4095;	
+			u2_printf("AD[%d]= %0.2fV ",a,vcc[a]);
 			vcc[a]=0; 
 		 }
-		  u2_printf("\r");
+			u2_printf("\r");
 		 HAL_ADC_Start_DMA(&hadc1, (uint32_t*)&uhADCxConvertedValue, ADCNB);	
-	 }
-	 
-	 	do  
+		}
+		do  
 		{   
-				Conf_Read = tmp006_ReadTwoByte(0x02);  
+			Conf_Read = tmp006_ReadTwoByte(0x02);  
 		} while ((Conf_Read&0x0080) != 0x0080); 
-		 Tdie_Temp = tmp006_ReadTwoByte(0x01) ;
+		Tdie_Temp = tmp006_ReadTwoByte(0x01) ;
 		u2_printf("temp：%d\r\n",Tdie_Temp);
-	 
+		 
 		bma222_ReadAcc();
 		u2_printf("x：%d\r\n",bmadata[0]);
 		u2_printf("y：%d\r\n",bmadata[1]);
 		u2_printf("z：%d\r\n",bmadata[2]);	 
-	 	u2_printf("\r\n");	  
+		u2_printf("\r\n");	  
 		uartdamget();
-  }
+		flag=mpu_dmp_get_data(&pitch,&roll,&yaw);
+		u2_printf("flag=%d\r\n",flag);
+		if(flag==0)
+	{
+		u2_printf("success***************************\r\n");
+		temp=MPU_Get_Temperature();	//得到温度值
+		MPU_Get_Accelerometer(&aacx,&aacy,&aacz);	//得到加速度传感器数据
+		MPU_Get_Gyroscope(&gyrox,&gyroy,&gyroz);	//得到陀螺仪数据
+
+		if((t%10)==0)
+		{ 
+			if(temp<0)
+			{
+				u2_printf("-");
+				temp=-temp;		//转为正数
+			}
+			u2_printf("%d",temp/100);
+			u2_printf("%d",temp%100);
+			u2_printf("%d",temp%10);
+			temp=pitch*10;
+			if(temp<0)
+			{
+				u2_printf("-");
+				
+				temp=-temp;		//转为正数
+			}
+			u2_printf("%d",temp/10);
+			u2_printf("%d",temp%10);
+
+			temp=roll*10;
+			if(temp<0)
+			{
+				u2_printf("-");
+				temp=-temp;		//转为正数
+			}
+			u2_printf("%d",temp/10);
+			u2_printf("%d",temp%10);
+
+			temp=yaw*10;
+			if(temp<0)
+			{
+				u2_printf("-");
+				temp=-temp;		//转为正数
+			}
+			u2_printf("%d",temp/10);
+			u2_printf("%d",temp%10);
+			t=0;
+		}
+		
+	}
+
+		t++;
+		
+		
+	}
 }
 
 
