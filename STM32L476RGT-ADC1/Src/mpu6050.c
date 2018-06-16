@@ -12,10 +12,7 @@ u8 MPU1_Init(void)
 	u8 res;
 	IIC_Init();//初始化IIC总线
 	res=MPU_Write_Byte(MPU_PWR_MGMT1_REG,0X80);	//复位MPU6050
-	if(res==1)
-	{
-	u2_printf("error\r\n");
-	}
+
     delay_ms(100);
 	MPU_Write_Byte(MPU_PWR_MGMT1_REG,0X00);	//唤醒MPU6050 
 	MPU_Set_Gyro_Fsr(3);					//陀螺仪传感器,±2000dps
@@ -186,6 +183,7 @@ u8 MPU_Read_Len(u8 addr,u8 reg,u8 len,u8 *buf)
     IIC_Stop();	//产生一个停止条件 
 	return 0;	
 }
+
 //IIC写一个字节 
 //reg:寄存器地址
 //data:数据

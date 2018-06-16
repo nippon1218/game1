@@ -117,14 +117,14 @@ int main(void)
 	{
 		u2_printf("MPU_Init()\r\n");
 		delay_us(1000000);
-	
 	}					//初始化MPU6050
 	
-	while(mpu_dmp_init())
-	{
-		u2_printf("mpu_dmp_init()\r\n");
-		delay_us(1000000);
-	}
+	
+//	while(mpu_dmp_init())
+//	{
+//		u2_printf("mpu_dmp_init()\r\n");
+//		delay_us(1000000);
+//	}
 	
 	
 //	ESP8266_AP_Init(4);
@@ -162,56 +162,75 @@ int main(void)
 		u2_printf("z：%d\r\n",bmadata[2]);	 
 		u2_printf("\r\n");	  
 		uartdamget();
-		flag=mpu_dmp_get_data(&pitch,&roll,&yaw);
-		u2_printf("flag=%d\r\n",flag);
-		if(flag==0)
-	{
-		u2_printf("success***************************\r\n");
-		temp=MPU_Get_Temperature();	//得到温度值
-		MPU_Get_Accelerometer(&aacx,&aacy,&aacz);	//得到加速度传感器数据
-		MPU_Get_Gyroscope(&gyrox,&gyroy,&gyroz);	//得到陀螺仪数据
-
-		if((t%10)==0)
-		{ 
-			if(temp<0)
-			{
-				u2_printf("-");
-				temp=-temp;		//转为正数
-			}
-			u2_printf("%d",temp/100);
-			u2_printf("%d",temp%100);
-			u2_printf("%d",temp%10);
-			temp=pitch*10;
-			if(temp<0)
-			{
-				u2_printf("-");
-				
-				temp=-temp;		//转为正数
-			}
-			u2_printf("%d",temp/10);
-			u2_printf("%d",temp%10);
-
-			temp=roll*10;
-			if(temp<0)
-			{
-				u2_printf("-");
-				temp=-temp;		//转为正数
-			}
-			u2_printf("%d",temp/10);
-			u2_printf("%d",temp%10);
-
-			temp=yaw*10;
-			if(temp<0)
-			{
-				u2_printf("-");
-				temp=-temp;		//转为正数
-			}
-			u2_printf("%d",temp/10);
-			u2_printf("%d",temp%10);
-			t=0;
-		}
 		
-	}
+		
+		temp=MPU_Get_Temperature();	//得到温度值
+		u2_printf("tem:%d",temp);
+		
+		flag=MPU_Get_Accelerometer(&aacx,&aacy,&aacz);	//得到加速度传感器数据
+//		u2_printf("MPU_Get_Accelerometer=%d",flag);
+		u2_printf("aacx=%d,aacy=%d,aacz=%d\r\n",aacx,aacy,aacz);
+		MPU_Get_Gyroscope(&gyrox,&gyroy,&gyroz);	//得到陀螺仪数据
+//		u2_printf("MPU_Get_Gyroscope=%d",flag);
+		u2_printf("gyrox=%d,gyroy=%d,gyroz=%d\r\n",aacx,aacy,aacz);		
+		
+		
+//		flag=mpu_dmp_get_data(&pitch,&roll,&yaw);
+//		u2_printf("flag=%d\r\n",flag);
+		
+//		if(flag==0)
+//	{
+//		u2_printf("success***************************\r\n");
+//		temp=MPU_Get_Temperature();	//得到温度值
+//		MPU_Get_Accelerometer(&aacx,&aacy,&aacz);	//得到加速度传感器数据
+//		MPU_Get_Gyroscope(&gyrox,&gyroy,&gyroz);	//得到陀螺仪数据
+
+//		
+//		if((t%10)==0)
+//		{ 
+//			if(temp<0)
+//			{
+//				u2_printf("-");
+//				temp=-temp;		//转为正数
+//			}
+//			u2_printf("%d",temp/100);
+//			u2_printf("%d",temp%100);
+//			u2_printf("%d",temp%10);
+//			temp=pitch*10;
+//			if(temp<0)
+//			{
+//				u2_printf("-");
+//				
+//				temp=-temp;		//转为正数
+//			}
+//			u2_printf("%d",temp/10);
+//			u2_printf("%d",temp%10);
+
+//			temp=roll*10;
+//			if(temp<0)
+//			{
+//				u2_printf("-");
+//				temp=-temp;		//转为正数
+//			}
+//			u2_printf("%d",temp/10);
+//			u2_printf("%d",temp%10);
+
+//			temp=yaw*10;
+//			if(temp<0)
+//			{
+//				u2_printf("-");
+//				temp=-temp;		//转为正数
+//			}
+//			u2_printf("%d",temp/10);
+//			u2_printf("%d",temp%10);
+//			t=0;
+//		}
+//		
+//	}
+//	else
+//	{
+//		u2_printf("hellojapan,t=%d**********\r\n",t);
+//	}
 
 		t++;
 		
