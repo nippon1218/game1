@@ -128,7 +128,10 @@ int main(void)
 	
 	
 //	ESP8266_AP_Init(4);
-
+	ESP8266_STAClient_Init(4);
+	
+	
+	
 	HAL_ADCEx_Calibration_Start(&hadc1, ADC_SINGLE_ENDED);
 	HAL_ADC_Start_DMA(&hadc1, (uint32_t*)&uhADCxConvertedValue, ADCNB);
 	__HAL_UART_ENABLE_IT(&huart2, UART_IT_IDLE); 
@@ -136,7 +139,6 @@ int main(void)
   while (1)
   {
 		delay_us(1000000);
-
 		if(dmaflage==1)
 		{
 		 dmaflage=0;

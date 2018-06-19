@@ -9,8 +9,8 @@
 #define PASS "12345678"               //热点的密码
 
 //WiFi热点名称
-#define WIFI_STATION "mitsubishi"     //要加入的WiFi站点名称
-#define PASSWORD "884869japan"        //相应的密码
+#define WIFI_STATION "BLMQ"     //要加入的WiFi站点名称
+#define PASSWORD "12345678"        //相应的密码
 
 #define ECN WPA_WPA2_PSK               
 #define port 8086                     //端口号
@@ -37,9 +37,10 @@ void esp8266_STA_SERVER_Init(void);             //初始化esp8266的STA模式
 void esp8266_Get_IP(void);                      //获取IP地址
 void esp8266_send_data(u8 *data);               //发送数据给设备0
 
+void ESP8266_STAClient_Init(u8 n);
 void ESP8266_apsta_Init(u8 n);                  //初始化esp8266的AP服务器-TCP服务器模式
 void ESP8266_AP_Init(u8 n);		                //初始化esp8266的AP模式
-
+u8 Esp8266_JoinIp(u8 *tcp,u8 *ip,u8 *Port,u16 timeout);
 
 #endif
 

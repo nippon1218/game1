@@ -7,9 +7,9 @@ u8 wifi_ssid[20]="Medical_Bed";	            //热点名称
 u8 wifi_ssid_password[20]="12345678";	    //热点密码  
 
 //WiFi配置-路由-默认值
-u8 wifi_station[20]="tmqs";					//路由器名称
-u8 wifi_station_password[20]="daizhiwen";	//路由器密码
-u8 wifi_ap_ip[15]="192.168.1.115";          //IP地址
+u8 wifi_station[20]="BLMQ";					//路由器名称
+u8 wifi_station_password[20]="12345678";	//路由器密码
+u8 wifi_ap_ip[15]="192.168.1.140";          //IP地址
 u16 wifi_ap_port=8086;                      //端口号
 
 /***********************************************************************
@@ -255,6 +255,26 @@ u8 atk_8266_SET_STA(u8 *ssid,u8 *password,u16 timeout)
 	if(time<timeout) res =1;		//若当前运行次数小于最大次数，返回1，否则返回0
 	return res;	 
 }
+
+
+u8 Esp8266_JoinIp(u8 *tcp,u8 *ip,u8 *Port,u16 timeout)
+{	
+	 u8 res=0;
+	 u16 time =0;
+	 USART3_RX_LEN=0;	//清空串口4状态标志位
+	u3_printf("AT+CIPSTART=\"%s\",\"%s\",%s\r\n",tcp,ip,Port);  //发送指令
+	time=0;
+	while(time<timeout)			//最大重复运行次数
+	{
+		if(strstr((const char *)USART3_RX_BUF,(const char *)"OK"))		//如果返回值为"OK"
+	    break;
+	    delay_ms(40);
+		time++;
+	}
+	if(time<timeout) res =1;		//若当前运行次数小于最大次数，返回1，否则返回0
+	return res;	 
+}
+
 
 /***********************************************************************
  函数名      ：atk_8266_SET_IPPORT(u16 timeout)
@@ -512,8 +532,105 @@ void ESP8266_AP_Init(u8 n)
 	 }
 }
 
+//STA Client初始化
+void ESP8266_STAClient_Init(u8 n)
+{
+	 u8 i;
+	 for(i=0;i<n;i++)	  //最大循环次数设置为参数n
+	 {
+		 if(atk_8266_send_cmd("AT+CWMODE=1","OK",60))	//发送指令：AT+CWMODE=2
+		 {
+			u2_printf("\r\n模式设置成功\r\n");
+			break;
+		 }
+		 else
+		 {
+			u2_printf("\r\n第%d次模式设置尝试失败，准备继续尝试设置\r\n",(i+1));
+		 }
+		delay_ms(200);			 
+	 }
 
+	 for(i=0;i<n;i++)		//最大循环次数设置为参数n
+	 {
+		 
+		 if(atk_8266_SET_STA(WIFI_STATION,PASSWORD,600))
+		 {
+			u2_printf("\r\nwifi连接成功\r\n");
+			break;
+		 }
+		 else
+		 {	u2_printf("\r\n第%d次wifi连接失败，准备继续尝试设置\r\n",(i+1)); }
+		 delay_ms(300);			 
+	 }		 
+	 
+	 for(i=0;i<n;i++)		//最大循环次数设置为参数n
+	 {
+			if(atk_8266_send_cmd("AT+CIPMODE=1","OK",450))
+			{
+				 u2_printf("\r\nMODE设置成功\r\n");
+				 break;
+			}
+				else
+			{
+				u2_printf("\r\n第%d次MODE设置失败，准备继续尝试设置\r\n",i+1);		
+			}
+			delay_ms(400);
+	 }	 
+	 	memset(USART3_RX_BUF,0,USART3_MAX_RECV_LEN);			          //清除串口4接收缓存区	
+		delay_ms(00);
+	 
+	 for(i=0;i<n;i++)		//最大循环次数设置为参数n
+	 {
+			if(atk_8266_send_cmd("AT+CIPMUX=0","OK",450))
+			{
+				 u2_printf("\r\n单路连接设置成功\r\n");
+				 break;
+			}
+				else
+			{
+				u2_printf("\r\n第%d次单路连接设置失败，准备继续尝试设置\r\n",i+1);		
+			}
+			delay_ms(400);
+	 }	 
+	 	memset(USART3_RX_BUF,0,USART3_MAX_RECV_LEN);			          //清除串口4接收缓存区	
+		delay_ms(00);	 
+	 
+	 for(i=0;i<n;i++)		//最大循环次数设置为参数n
+	 {
+		 if(Esp8266_JoinIp("TCP","192.168.1.150","8086",250))
+		 {
+			u2_printf("\r\n加入Ip成功\r\n");
+			break;
+		 }
+		 else
+		 {	u2_printf("\r\n第%d次加入Ip失败，准备继续尝试设置\r\n",(i+1)); }
+		 
+		 delay_ms(300);			 
+	 }	 
 
+	 for(i=0;i<n;i++)		//最大循环次数设置为参数n
+	 {
+		if(atk_8266_send_cmd("AT+CIPSEND","OK",200))        //发送开始传输指令"AT+CIPSEND"，并检测返回值是否为"OK"
+		  {printf("\r\n开始传输成功\r\n");break;}
+		else
+		  {printf("\r\n开始传输失败\r\n");}		
+			delay_ms(400);			
+	 }
+
+	 for(i=0;i<n;i++)		//最大循环次数设置为参数n
+	 {		 
+		 if(atk_8266_send_cmd("AT+CIPSTO=150","OK",60))	//发送指令：AT+CWMODE=2
+		 {
+			u2_printf("\r\n超时时间设置成功\r\n");
+			break;
+		 }
+		 else
+		 {
+			u2_printf("\r\n第%d次超时时间设置尝试失败，准备继续尝试设置\r\n",(i+1));
+		 }
+		delay_ms(200);				
+	 }
+}
 
 /***********************************************************************
  函数名    ：esp8266_STA_SERVER_Init
