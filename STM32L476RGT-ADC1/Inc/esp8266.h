@@ -38,9 +38,10 @@ void esp8266_Get_IP(void);                      //获取IP地址
 void esp8266_send_data(u8 *data);               //发送数据给设备0
 
 void ESP8266_STAClient_Init(u8 n);
+void ESP8266_STAClient_Init1(u8 n);
 void ESP8266_apsta_Init(u8 n);                  //初始化esp8266的AP服务器-TCP服务器模式
 void ESP8266_AP_Init(u8 n);		                //初始化esp8266的AP模式
-u8 Esp8266_JoinIp(u8 *tcp,u8 *ip,u8 *Port,u16 timeout);
+u8 Esp8266_JoinIp(u16 timeout);
 
 #endif
 

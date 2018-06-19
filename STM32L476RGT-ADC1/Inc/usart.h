@@ -56,12 +56,12 @@
 /* USER CODE END Includes */
 
 //串口2相关宏定义
-#define USART2_MAX_RECV_LEN		1024					//最大接收缓存字节数
-#define USART2_MAX_SEND_LEN		1024					//最大发送缓存字节数
+#define USART2_MAX_RECV_LEN		2048					//最大接收缓存字节数
+#define USART2_MAX_SEND_LEN		2048					//最大发送缓存字节数
 #define USART2_RX_EN 			1					//0,不接收;1,接收.
 	 
-#define USART3_MAX_RECV_LEN		1024					//最大接收缓存字节数
-#define USART3_MAX_SEND_LEN		1024					//最大发送缓存字节数
+#define USART3_MAX_RECV_LEN		2048					//最大接收缓存字节数
+#define USART3_MAX_SEND_LEN		2048					//最大发送缓存字节数
 	 
 	 
 extern UART_HandleTypeDef huart2;
