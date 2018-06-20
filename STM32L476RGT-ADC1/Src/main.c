@@ -107,7 +107,6 @@ int main(void)
 	short temp;					//温度
 	short temperature;  
 	
-	
   HAL_Init();
   SystemClock_Config();
 	delay_init(10);
@@ -133,60 +132,60 @@ int main(void)
 	
 //	ESP8266_AP_Init(4);
 	
-	ESP8266_STAClient_Init1(4);
+//	ESP8266_STAClient_Init1(4);
 	
-//	while(DS18B20_Init())	
-//	{
-//		u2_printf("no ds18b20\r\n");
-//		delay_ms(500);
-//	}
+	while(DS18B20_Init())	
+	{
+		u2_printf("no ds18b20\r\n");
+		delay_ms(500);
+	}
 	
-	HAL_ADCEx_Calibration_Start(&hadc1, ADC_SINGLE_ENDED);
-	HAL_ADC_Start_DMA(&hadc1, (uint32_t*)&uhADCxConvertedValue, ADCNB);
-	__HAL_UART_ENABLE_IT(&huart2, UART_IT_IDLE); 
+//	HAL_ADCEx_Calibration_Start(&hadc1, ADC_SINGLE_ENDED);
+//	HAL_ADC_Start_DMA(&hadc1, (uint32_t*)&uhADCxConvertedValue, ADCNB);
+//	__HAL_UART_ENABLE_IT(&huart2, UART_IT_IDLE); 
 
   while (1)
   {
-		delay_us(800000);
-		if(dmaflage==1)
-		{
-		 dmaflage=0;
-		 for(int a=0;a<CHN;a++)
-		 {
-			 vcc[a]=adcfilter(NB,a)*3.3/4095;
-			 test=vcc[a]*5;
-				u2_printf("AD[%d]= %0.2fV ",a,vcc[a]);
-			vcc[a]=0; 
-		 }
-			u2_printf("\r");
-		 u3_printf("YL1*%0.2f*%0.2f*%0.2f%*%0.2f*",test,test+2,test,31);
-		 HAL_ADC_Start_DMA(&hadc1, (uint32_t*)&uhADCxConvertedValue, ADCNB);	
-		}
-		delay_us(800000);
-		do  
-		{   
-			Conf_Read = tmp006_ReadTwoByte(0x02);  
-		} while ((Conf_Read&0x0080) != 0x0080); 
-		Tdie_Temp = tmp006_ReadTwoByte(0x01) ;
-		
-		u2_printf("temp：%d\r\n",Tdie_Temp/125);
-		u3_printf("WD1*%d*%d*%d%*%d*\r\n",Tdie_Temp/125,Tdie_Temp/125,Tdie_Temp/125,Tdie_Temp/125);		
-		delay_us(800000);
-		bma222_ReadAcc();
-		u3_printf("ZT1*x:%d, y:%d, z:%d*\r\n",bmadata[0]/10,bmadata[1]/10,bmadata[2]/10);	
-		u2_printf("x：%d\r\n",bmadata[0]);
-		u2_printf("y：%d\r\n",bmadata[1]);
-		u2_printf("z：%d\r\n",bmadata[2]);	 
-		u2_printf("\r\n");  
-		uartdamget();
+		delay_us(600000);
+//		if(dmaflage==1)
+//		{
+//		 dmaflage=0;
+//		 for(int a=0;a<CHN;a++)
+//		 {
+//			 vcc[a]=adcfilter(NB,a)*3.3/4095;
+//			 test=vcc[a]*5;
+//				u2_printf("AD[%d]= %0.2fV ",a,vcc[a]);
+//			vcc[a]=0; 
+//		 }
+//			u2_printf("\r");
+////		 u3_printf("YL1*%0.2f*%0.2f*%0.2f%*%0.2f*",test,test+2,test,31);
+//		 HAL_ADC_Start_DMA(&hadc1, (uint32_t*)&uhADCxConvertedValue, ADCNB);	
+//		}
+//		delay_us(800000);
+//		do  
+//		{   
+//			Conf_Read = tmp006_ReadTwoByte(0x02);  
+//		} while ((Conf_Read&0x0080) != 0x0080); 
+//		Tdie_Temp = tmp006_ReadTwoByte(0x01) ;
+//		
+//		u2_printf("temp：%d\r\n",Tdie_Temp/125);
+////		u3_printf("WD1*%d*%d*%d%*%d*\r\n",Tdie_Temp/125,Tdie_Temp/125,Tdie_Temp/125,Tdie_Temp/125);		
+//		delay_us(800000);
+//		bma222_ReadAcc();
+//		u3_printf("ZT1*x:%d, y:%d, z:%d*\r\n",bmadata[0]/10,bmadata[1]/10,bmadata[2]/10);	
+//		u2_printf("x：%d\r\n",bmadata[0]);
+//		u2_printf("y：%d\r\n",bmadata[1]);
+//		u2_printf("z：%d\r\n",bmadata[2]);	 
+//		u2_printf("\r\n");  
+//		uartdamget();
 
-//		temperature=DS18B20_Get_Temp();		//获取温度
+		temperature=DS18B20_Get_Temp();		//获取温度
 		
 //		if(temperature<0)
 //		{
 //			temperature=-temperature;
 //		}
-//		u2_printf("DS18B20测出的温度:%d\r\n",temperature);
+		u2_printf("DS18B20测出的温度:%d\r\n",temperature);
 		
 //		temp=MPU_Get_Temperature();	//得到温度值
 //		u2_printf("tem:%d",temp);

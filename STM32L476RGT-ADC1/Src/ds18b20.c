@@ -2,6 +2,7 @@
 #include "delay.h"
 #include "sys.h"
 #include "usart.h"
+
 u8 DS18B20_DQIN=0;
 
 
@@ -9,10 +10,11 @@ void DS18B20_IO_OUT(void)
 {
     GPIO_InitTypeDef GPIO_Initure;    
     __GPIOC_CLK_ENABLE();            //使能GPIOC时钟
+	
     GPIO_Initure.Pin=GPIO_PIN_9;		
     GPIO_Initure.Mode=GPIO_MODE_OUTPUT_PP;   //推挽输出
     GPIO_Initure.Pull=GPIO_PULLUP;           //上拉
-    GPIO_Initure.Speed=GPIO_SPEED_FAST;      //快速
+    GPIO_Initure.Speed=GPIO_SPEED_HIGH;      //快速
     HAL_GPIO_Init(GPIOC,&GPIO_Initure);
 }
 
@@ -23,7 +25,7 @@ void DS18B20_IO_IN(void)
     GPIO_Initure.Pin=GPIO_PIN_9;			
     GPIO_Initure.Mode=GPIO_MODE_INPUT;   //输入浮空
     GPIO_Initure.Pull=GPIO_PULLUP;           //上拉
-    GPIO_Initure.Speed=GPIO_SPEED_FAST;      //快速
+    GPIO_Initure.Speed=GPIO_SPEED_HIGH;      //快速
     HAL_GPIO_Init(GPIOC,&GPIO_Initure);
 }
 
@@ -70,8 +72,8 @@ u8 DS18B20_Read_Bit(void)
   DS18B20_DQ_1; 
 	DS18B20_IO_IN();    //设置为输入
 	delay_us(12);
-	DS18B20_DQIN=DS18B20_DQ_Read;
-	if(DS18B20_DQIN==GPIO_PIN_SET)data=1;
+//	DS18B20_DQIN=DS18B20_DQ_Read;
+	if(DS18B20_DQ_Read==GPIO_PIN_SET)data=1;
   else data=0;	 
   delay_us(50);           
   return data;
@@ -145,21 +147,18 @@ short DS18B20_Get_Temp(void)
     u8 temp;
     u8 TL,TH;
     short tem;
-    DS18B20_Start ();           //开始转换
+    DS18B20_Start ();        	   //开始转换
     DS18B20_Rst();
-    if(DS18B20_Check())
-		{
-			u2_printf("*********************ERROR");
-		}
+		DS18B20_Check();
+
     DS18B20_Write_Byte(0xcc);   // skip rom
     DS18B20_Write_Byte(0xbe);   // convert	 
 		
     TL=DS18B20_Read_Byte();     // LSB   
-		
-		u2_printf("TL:%d\r\n",TL);
     TH=DS18B20_Read_Byte();     // MSB   
-		u2_printf("TH:%d\r\n",TH);
-    if(TH>7)
+		u2_printf("TL:%d,TH:%d\r\n",TL,TH);
+    
+	if(TH>7)
     {
         TH=~TH;
         TL=~TL; 

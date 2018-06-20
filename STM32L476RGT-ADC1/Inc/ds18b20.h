@@ -5,7 +5,7 @@
 #define DS18B20_DQ_1 HAL_GPIO_WritePin(GPIOC,GPIO_PIN_9,GPIO_PIN_SET)
 #define DS18B20_DQ_0 HAL_GPIO_WritePin(GPIOC,GPIO_PIN_9,GPIO_PIN_RESET)
 
-#define DS18B20_DQ_Read	 HAL_GPIO_ReadPin(GPIOC,GPIO_PIN_9);		
+#define DS18B20_DQ_Read	 HAL_GPIO_ReadPin(GPIOC,GPIO_PIN_9)	
 
 u8 DS18B20_Init(void);			//初始化DS18B20
 short DS18B20_Get_Temp(void);	//获取温度
