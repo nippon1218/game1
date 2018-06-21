@@ -104,7 +104,7 @@ int main(void)
 	float pitch,roll,yaw; 		//欧拉角
 	short aacx,aacy,aacz;		//加速度传感器原始数据
 	short gyrox,gyroy,gyroz;	//陀螺仪原始数据
-	short temp;					//温度
+//	short temp;					//温度
 	short temperature;  
 	
   HAL_Init();
@@ -116,6 +116,8 @@ int main(void)
   MX_ADC1_Init();
   MX_USART2_UART_Init();
 	MX_USART3_UART_Init();
+	
+//	DS18B20_Init();
 	
 //	while(MPU1_Init())
 //	{
@@ -143,9 +145,37 @@ int main(void)
 //	HAL_ADCEx_Calibration_Start(&hadc1, ADC_SINGLE_ENDED);
 //	HAL_ADC_Start_DMA(&hadc1, (uint32_t*)&uhADCxConvertedValue, ADCNB);
 //	__HAL_UART_ENABLE_IT(&huart2, UART_IT_IDLE); 
-
+// DS18B20_IO_OUT(); 
   while (1)
   {
+//		delay_us(1);
+//		t++;
+//		if(t%4==0)
+//		{HAL_GPIO_WritePin(GPIOC,GPIO_PIN_10,GPIO_PIN_SET);}
+//		else if(t%4==2)
+//		{HAL_GPIO_WritePin(GPIOC,GPIO_PIN_10,GPIO_PIN_RESET);}
+		
+		
+//		delay_us(0);
+//		for(t=0;t<15;t++)
+//		{
+//			;
+//		}
+//		HAL_GPIO_WritePin(GPIOC,GPIO_PIN_10,GPIO_PIN_SET);
+////		delay_us(0);
+//		for(t=0;t<15;t++)
+//		{
+//			;
+//		}
+//		HAL_GPIO_WritePin(GPIOC,GPIO_PIN_10,GPIO_PIN_RESET);
+//		if(t%2==0)
+//		{
+//			HAL_GPIO_WritePin(GPIOC,GPIO_PIN_10,GPIO_PIN_SET);
+//		}
+//		else
+//		{
+//		HAL_GPIO_WritePin(GPIOC,GPIO_PIN_10,GPIO_PIN_RESET);
+//		}
 		delay_us(600000);
 //		if(dmaflage==1)
 //		{
@@ -180,7 +210,9 @@ int main(void)
 //		uartdamget();
 
 		temperature=DS18B20_Get_Temp();		//获取温度
+//			DS18B20_Write_Byte(0x01);   // skip rom
 		
+//		DS18B20_Rst();
 //		if(temperature<0)
 //		{
 //			temperature=-temperature;
