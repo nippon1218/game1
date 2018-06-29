@@ -190,13 +190,10 @@ int main(void)
 //			temperature=SMBus_ReadTemp();			//读取温度
 //			temperature=memread();
 //					delay_us(1000000);
-		temperature=DS18B20_Get_Temp();		//获取温度
-		u2_printf("测出的温度:%d %d\r\n",temperature/10,temperature%10);
 		
-//		if(temperature<0)
-//		{
-//			temperature=-temperature;
-//		}
+		temperature=DS18B20_Get_Temp();		//获取温度
+		u2_printf("测出的温度:%d.%d℃\r\n",temperature/10,temperature%10);
+		
 
 		
 		temp=MPU_Get_Temperature();	//得到温度值
@@ -209,7 +206,7 @@ int main(void)
 //		u2_printf("MPU_Get_Gyroscope=%d",flag);
 		u2_printf("gyrox=%d,gyroy=%d,gyroz=%d\r\n",aacx,aacy,aacz);		
 		
-		
+
 //		flag=mpu_dmp_get_data(&pitch,&roll,&yaw);
 //		u2_printf("flag=%d\r\n",flag);
 		
