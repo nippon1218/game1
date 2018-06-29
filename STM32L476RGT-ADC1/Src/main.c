@@ -45,6 +45,7 @@
 #include "gpio.h"
 #include "sys.h"
 #include "delay.h"
+//#include "delay2.h"
 #include "myiic.h"
 #include "tmp006.h"
 #include "bma222.h"
@@ -53,7 +54,7 @@
 #include "inv_mpu.h"
 #include "inv_mpu_dmp_motion_driver.h" 
 #include "ds18b20.h"
-
+//#include "mlx90614.h"
 
 
 #define u8 uint8_t
@@ -109,13 +110,18 @@ int main(void)
 	
   HAL_Init();
   SystemClock_Config();
-	delay_init(10);
+	delay_init(80);
+//	delay2_init();
 	IIC_Init();
+//	Mlx96014_Init();
+	
   MX_GPIO_Init();
   MX_DMA_Init();
   MX_ADC1_Init();
   MX_USART2_UART_Init();
 	MX_USART3_UART_Init();
+	
+	
 	
 //	DS18B20_Init();
 	
@@ -142,31 +148,33 @@ int main(void)
 		delay_ms(500);
 	}
 	
-//	HAL_ADCEx_Calibration_Start(&hadc1, ADC_SINGLE_ENDED);
-//	HAL_ADC_Start_DMA(&hadc1, (uint32_t*)&uhADCxConvertedValue, ADCNB);
-//	__HAL_UART_ENABLE_IT(&huart2, UART_IT_IDLE); 
+	HAL_ADCEx_Calibration_Start(&hadc1, ADC_SINGLE_ENDED);
+	HAL_ADC_Start_DMA(&hadc1, (uint32_t*)&uhADCxConvertedValue, ADCNB);
+	__HAL_UART_ENABLE_IT(&huart2, UART_IT_IDLE); 
 // DS18B20_IO_OUT(); 
   while (1)
   {
-//		delay_us(1);
+		delay_us(1000000);
+
 //		t++;
+//		u2_printf("t=%d",t);
 //		if(t%4==0)
+//		for(i=0;i<1;i++)
+//		{;}
+
 //		{HAL_GPIO_WritePin(GPIOC,GPIO_PIN_10,GPIO_PIN_SET);}
-//		else if(t%4==2)
+////		else if(t%4==2)
+//		delay2_us(60);
+////		for(i=0;i<1;i++)
+////		{;}
 //		{HAL_GPIO_WritePin(GPIOC,GPIO_PIN_10,GPIO_PIN_RESET);}
 		
 		
-//		delay_us(0);
-//		for(t=0;t<15;t++)
-//		{
-//			;
-//		}
+//		delay_us(2);
+
 //		HAL_GPIO_WritePin(GPIOC,GPIO_PIN_10,GPIO_PIN_SET);
-////		delay_us(0);
-//		for(t=0;t<15;t++)
-//		{
-//			;
-//		}
+//		delay_us(2);
+
 //		HAL_GPIO_WritePin(GPIOC,GPIO_PIN_10,GPIO_PIN_RESET);
 //		if(t%2==0)
 //		{
@@ -176,21 +184,21 @@ int main(void)
 //		{
 //		HAL_GPIO_WritePin(GPIOC,GPIO_PIN_10,GPIO_PIN_RESET);
 //		}
-		delay_us(600000);
-//		if(dmaflage==1)
-//		{
-//		 dmaflage=0;
-//		 for(int a=0;a<CHN;a++)
-//		 {
-//			 vcc[a]=adcfilter(NB,a)*3.3/4095;
-//			 test=vcc[a]*5;
-//				u2_printf("AD[%d]= %0.2fV ",a,vcc[a]);
-//			vcc[a]=0; 
-//		 }
-//			u2_printf("\r");
-////		 u3_printf("YL1*%0.2f*%0.2f*%0.2f%*%0.2f*",test,test+2,test,31);
-//		 HAL_ADC_Start_DMA(&hadc1, (uint32_t*)&uhADCxConvertedValue, ADCNB);	
-//		}
+//		delay_us(600000);
+		if(dmaflage==1)
+		{
+		 dmaflage=0;
+		 for(int a=0;a<CHN;a++)
+		 {
+			 vcc[a]=adcfilter(NB,a)*3.3/4095;
+			 test=vcc[a]*5;
+				u2_printf("AD[%d]= %0.2fV ",a,vcc[a]);
+			vcc[a]=0; 
+		 }
+			u2_printf("\r\n");
+//		 u3_printf("YL1*%0.2f*%0.2f*%0.2f%*%0.2f*",test,test+2,test,31);
+		 HAL_ADC_Start_DMA(&hadc1, (uint32_t*)&uhADCxConvertedValue, ADCNB);	
+		}
 //		delay_us(800000);
 //		do  
 //		{   
@@ -208,8 +216,11 @@ int main(void)
 //		u2_printf("z：%d\r\n",bmadata[2]);	 
 //		u2_printf("\r\n");  
 //		uartdamget();
-
+//			temperature=SMBus_ReadTemp();			//读取温度
+//			temperature=memread();
+//					delay_us(1000000);
 		temperature=DS18B20_Get_Temp();		//获取温度
+		u2_printf("测出的温度:%d %d\r\n",temperature/10,temperature%10);
 //			DS18B20_Write_Byte(0x01);   // skip rom
 		
 //		DS18B20_Rst();
@@ -217,7 +228,7 @@ int main(void)
 //		{
 //			temperature=-temperature;
 //		}
-		u2_printf("DS18B20测出的温度:%d\r\n",temperature);
+
 		
 //		temp=MPU_Get_Temperature();	//得到温度值
 //		u2_printf("tem:%d",temp);

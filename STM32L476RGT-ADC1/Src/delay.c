@@ -120,7 +120,7 @@ void delay_us(u32 nus)
 	u32 told,tnow,tcnt=0;
 	u32 reload=SysTick->LOAD;				//LOAD的值	    	 
 	ticks=nus*fac_us; 						//需要的节拍数 
-	delay_osschedlock();					//阻止OS调度，防止打断us延时
+//	delay_osschedlock();					//阻止OS调度，防止打断us延时
 	told=SysTick->VAL;        				//刚进入时的计数器值
 	while(1)
 	{
@@ -133,7 +133,7 @@ void delay_us(u32 nus)
 			if(tcnt>=ticks)break;			//时间超过/等于要延迟的时间,则退出.
 		}  
 	};
-	delay_osschedunlock();					//恢复OS调度											    
+//	delay_osschedunlock();					//恢复OS调度											    
 }  
 //延时nms
 //nms:要延时的ms数

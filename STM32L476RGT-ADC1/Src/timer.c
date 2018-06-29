@@ -15,7 +15,7 @@ void TIM7_Init(u16 arr,u16 psc)
     TIM7_Handler.Init.CounterMode=TIM_COUNTERMODE_UP;         //向上计数器
     TIM7_Handler.Init.Period=arr;                             //自动装载值
     TIM7_Handler.Init.ClockDivision=TIM_CLOCKDIVISION_DIV1;   //时钟分频因子
-    HAL_TIM_Base_Init(&TIM7_Handler);    
+    HAL_TIM_Base_Init(&TIM7_Handler);     
     HAL_TIM_Base_Start_IT(&TIM7_Handler); //使能定时器7和定时器7更新中断：TIM_IT_UPDATE									 
 }
 

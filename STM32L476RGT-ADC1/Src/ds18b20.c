@@ -1,5 +1,6 @@
 #include "ds18b20.h"
 #include "delay.h"
+#include "delay2.h"
 #include "sys.h"
 #include "usart.h"
 
@@ -9,14 +10,13 @@ u8 DS18B20_DQIN=0;
 void DS18B20_IO_OUT(void)
 {
     GPIO_InitTypeDef GPIO_Initure;    
-    __GPIOC_CLK_ENABLE();            //使能GPIOC时钟
-	
-//    GPIO_Initure.Pin=GPIO_PIN_9;		
+//    __GPIOC_CLK_ENABLE();            //使能GPIOC时钟
+		
 	    GPIO_Initure.Pin=GPIO_PIN_10;	
     GPIO_Initure.Mode=GPIO_MODE_OUTPUT_PP;   //推挽输出
-    GPIO_Initure.Pull=GPIO_SPEED_HIGH;           //上拉
+//    GPIO_Initure.Pull=GPIO_SPEED_HIGH;           //上拉
 
-    GPIO_Initure.Speed=GPIO_SPEED_HIGH;      //快速
+//    GPIO_Initure.Speed=GPIO_SPEED_HIGH;      //快速
     HAL_GPIO_Init(GPIOC,&GPIO_Initure);
 }
 
@@ -24,7 +24,7 @@ void DS18B20_IO_IN(void)
 {
     GPIO_InitTypeDef GPIO_Initure;    
     __GPIOC_CLK_ENABLE();            //使能GPIOC时钟
-//    GPIO_Initure.Pin=GPIO_PIN_9;	
+
     GPIO_Initure.Pin=GPIO_PIN_10;		
     GPIO_Initure.Mode=GPIO_MODE_INPUT;   //输入浮空
     GPIO_Initure.Pull=GPIO_PULLUP;           //上拉
@@ -34,16 +34,17 @@ void DS18B20_IO_IN(void)
 
 
 void DS18B20_Rst(void)	   
-{                 
+{       
 	DS18B20_IO_OUT();   //设置为输出
   DS18B20_DQ_0;  //拉低DQ
  delay_us(750);      //拉低750us
   DS18B20_DQ_1;  //DQ=1 
-	delay_us(15);       //15US
+		delay_us(15);       //15US
 }
 
 u8 DS18B20_Check(void) 	   
 {
+	u8 i;	
 	u8 retry=0;
 	DS18B20_IO_IN();    //设置为输入
 	DS18B20_DQIN=DS18B20_DQ_Read;
@@ -59,6 +60,8 @@ u8 DS18B20_Check(void)
     while (!DS18B20_DQIN&&retry<240)
 	{
 		retry++;
+//		for(i=0;i<1;i++)
+//		{;}
 		delay_us(1);
 		DS18B20_DQIN=DS18B20_DQ_Read;
 	};
@@ -72,21 +75,20 @@ u8 DS18B20_Read_Bit(void)
   u8 data;
 	DS18B20_IO_OUT();   //设置为输出
   DS18B20_DQ_0; 
-//	delay_us(2);
-	for(t=0;t<3;t++)
-	{;}
+	delay_us(2);
+
 
   DS18B20_DQ_1; 
+	
+	
+	
 	DS18B20_IO_IN();    //设置为输入
-	delay_us(7);				//设置为12us
-//				for(t=0;t<16;t++)
-//		{
-//			;
-//		}
+	delay_us(12);				//设置为12us
+
 //	DS18B20_DQIN=DS18B20_DQ_Read;
 	if(DS18B20_DQ_Read==GPIO_PIN_SET)data=1;
   else data=0;
-  delay_us(49);         //原始值50  
+  delay_us(50);         //原始值50  
   return data;
 }
 
@@ -116,20 +118,16 @@ void DS18B20_Write_Byte(u8 dat)
         if(testb)       // 写1
         {
           DS18B20_DQ_0;
-					for(t=0;t<2;t++)
-					{;}
- //           delay_us(2);    //原始值是2                        
+           delay_us(2);    //原始值是2                        
             DS18B20_DQ_1;
-            delay_us(56);             
+            delay_us(60);             
         }
         else            //写0
         {
             DS18B20_DQ_0;
-            delay_us(56);             
+            delay_us(60);             
             DS18B20_DQ_1;
-					for(t=0;t<2;t++)
-					{;}
- //           delay_us(2);                          
+           delay_us(2);                          
         }
     }
 }
@@ -175,8 +173,9 @@ short DS18B20_Get_Temp(void)
     DS18B20_Write_Byte(0xbe);   // convert	 
 		
     TL=DS18B20_Read_Byte();     // LSB   
+ 
     TH=DS18B20_Read_Byte();     // MSB   
-		u2_printf("TL:%d,TH:%d\r\n",TL,TH);
+		u2_printf("%d,%d\r\n",TL,TH);
     
 		if(TH>7)
     {
@@ -187,7 +186,9 @@ short DS18B20_Get_Temp(void)
     tem=TH; //获得高八位
     tem<<=8;    
     tem+=TL;//获得底八位
-    tem=(double)tem*0.625;//转换     
+
+    tem=(short)tem*0.625;//转换     
+
 	if(temp)return tem; //返回温度值
 	else return -tem;    
 }
