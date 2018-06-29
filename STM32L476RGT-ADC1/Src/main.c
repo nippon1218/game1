@@ -105,7 +105,7 @@ int main(void)
 	float pitch,roll,yaw; 		//欧拉角
 	short aacx,aacy,aacz;		//加速度传感器原始数据
 	short gyrox,gyroy,gyroz;	//陀螺仪原始数据
-//	short temp;					//温度
+	short temp;					//温度
 	short temperature;  
 	
   HAL_Init();
@@ -125,11 +125,11 @@ int main(void)
 	
 //	DS18B20_Init();
 	
-//	while(MPU1_Init())
-//	{
-//		u2_printf("MPU_Init()\r\n");
-//		delay_us(1000000);
-//	}					//初始化MPU6050
+	while(MPU1_Init())
+	{
+		u2_printf("MPU_Init()\r\n");
+		delay_us(1000000);
+	}					//初始化MPU6050
 	
 	
 //	while(mpu_dmp_init())
@@ -156,35 +156,6 @@ int main(void)
   {
 		delay_us(1000000);
 
-//		t++;
-//		u2_printf("t=%d",t);
-//		if(t%4==0)
-//		for(i=0;i<1;i++)
-//		{;}
-
-//		{HAL_GPIO_WritePin(GPIOC,GPIO_PIN_10,GPIO_PIN_SET);}
-////		else if(t%4==2)
-//		delay2_us(60);
-////		for(i=0;i<1;i++)
-////		{;}
-//		{HAL_GPIO_WritePin(GPIOC,GPIO_PIN_10,GPIO_PIN_RESET);}
-		
-		
-//		delay_us(2);
-
-//		HAL_GPIO_WritePin(GPIOC,GPIO_PIN_10,GPIO_PIN_SET);
-//		delay_us(2);
-
-//		HAL_GPIO_WritePin(GPIOC,GPIO_PIN_10,GPIO_PIN_RESET);
-//		if(t%2==0)
-//		{
-//			HAL_GPIO_WritePin(GPIOC,GPIO_PIN_10,GPIO_PIN_SET);
-//		}
-//		else
-//		{
-//		HAL_GPIO_WritePin(GPIOC,GPIO_PIN_10,GPIO_PIN_RESET);
-//		}
-//		delay_us(600000);
 		if(dmaflage==1)
 		{
 		 dmaflage=0;
@@ -199,7 +170,7 @@ int main(void)
 //		 u3_printf("YL1*%0.2f*%0.2f*%0.2f%*%0.2f*",test,test+2,test,31);
 		 HAL_ADC_Start_DMA(&hadc1, (uint32_t*)&uhADCxConvertedValue, ADCNB);	
 		}
-//		delay_us(800000);
+
 //		do  
 //		{   
 //			Conf_Read = tmp006_ReadTwoByte(0x02);  
@@ -221,24 +192,22 @@ int main(void)
 //					delay_us(1000000);
 		temperature=DS18B20_Get_Temp();		//获取温度
 		u2_printf("测出的温度:%d %d\r\n",temperature/10,temperature%10);
-//			DS18B20_Write_Byte(0x01);   // skip rom
 		
-//		DS18B20_Rst();
 //		if(temperature<0)
 //		{
 //			temperature=-temperature;
 //		}
 
 		
-//		temp=MPU_Get_Temperature();	//得到温度值
-//		u2_printf("tem:%d",temp);
-//		
-//		flag=MPU_Get_Accelerometer(&aacx,&aacy,&aacz);	//得到加速度传感器数据
-////		u2_printf("MPU_Get_Accelerometer=%d",flag);
-//		u2_printf("aacx=%d,aacy=%d,aacz=%d\r\n",aacx,aacy,aacz);
-//		MPU_Get_Gyroscope(&gyrox,&gyroy,&gyroz);	//得到陀螺仪数据
-////		u2_printf("MPU_Get_Gyroscope=%d",flag);
-//		u2_printf("gyrox=%d,gyroy=%d,gyroz=%d\r\n",aacx,aacy,aacz);		
+		temp=MPU_Get_Temperature();	//得到温度值
+		u2_printf("tem:%d",temp);
+		
+		flag=MPU_Get_Accelerometer(&aacx,&aacy,&aacz);	//得到加速度传感器数据
+//		u2_printf("MPU_Get_Accelerometer=%d",flag);
+		u2_printf("aacx=%d,aacy=%d,aacz=%d\r\n",aacx,aacy,aacz);
+		MPU_Get_Gyroscope(&gyrox,&gyroy,&gyroz);	//得到陀螺仪数据
+//		u2_printf("MPU_Get_Gyroscope=%d",flag);
+		u2_printf("gyrox=%d,gyroy=%d,gyroz=%d\r\n",aacx,aacy,aacz);		
 		
 		
 //		flag=mpu_dmp_get_data(&pitch,&roll,&yaw);
