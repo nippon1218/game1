@@ -212,7 +212,7 @@ int main(void)
 //		u2_printf("MPU_Get_Gyroscope=%d",flag);
 		u2_printf("gyrox=%d,gyroy=%d,gyroz=%d\r\n",aacx,aacy,aacz);		
 
-		u3_printf("BL1*%0.1f*X:%d Y:%d Z:%d*%0.2f\r\n",ds18b20_temp,gyrox,gyroy,gyroz,vcc[0]);
+		u3_printf("BL1*%0.1f*X:%d Y:%d Z:%d*%0.2f\r\n",ds18b20_temp,gyrox,gyroy,gyroz,5*(3.3-vcc[0]));
 
 //		flag=mpu_dmp_get_data(&pitch,&roll,&yaw);
 //		u2_printf("flag=%d\r\n",flag);
