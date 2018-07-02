@@ -88,6 +88,8 @@ u16 uhADCxConvertedValue[NB][CHN];
 volatile int dmaflage=0;
 //float vcc[CHN]={0};
 double vcc[CHN]={0};
+double ds18b20_temp;
+
 
 int main(void)
 {
@@ -111,7 +113,6 @@ int main(void)
   HAL_Init();
   SystemClock_Config();
 	delay_init(80);
-//	delay2_init();
 	IIC_Init();
 //	Mlx96014_Init();
 	
@@ -121,9 +122,7 @@ int main(void)
   MX_USART2_UART_Init();
 	MX_USART3_UART_Init();
 	
-	
-	
-//	DS18B20_Init();
+
 	
 	while(MPU1_Init())
 	{
@@ -140,7 +139,7 @@ int main(void)
 	
 //	ESP8266_AP_Init(4);
 	
-//	ESP8266_STAClient_Init1(4);
+	ESP8266_STAClient_Init1(4);
 	
 	while(DS18B20_Init())	
 	{
@@ -151,10 +150,11 @@ int main(void)
 	HAL_ADCEx_Calibration_Start(&hadc1, ADC_SINGLE_ENDED);
 	HAL_ADC_Start_DMA(&hadc1, (uint32_t*)&uhADCxConvertedValue, ADCNB);
 	__HAL_UART_ENABLE_IT(&huart2, UART_IT_IDLE); 
-// DS18B20_IO_OUT(); 
+
+	
   while (1)
   {
-		delay_us(1000000);
+		delay_us(500000);
 
 		if(dmaflage==1)
 		{
@@ -162,15 +162,21 @@ int main(void)
 		 for(int a=0;a<CHN;a++)
 		 {
 			 vcc[a]=adcfilter(NB,a)*3.3/4095;
-			 test=vcc[a]*5;
-				u2_printf("AD[%d]= %0.2fV ",a,vcc[a]);
-			vcc[a]=0; 
+			 test=vcc[a];
+//				u2_printf("AD[%d]= %0.2fV ",a,vcc[a]);
+//			vcc[a]=0; 
 		 }
 			u2_printf("\r\n");
+
+		  Sort(4);	//对四个参数进行排序
+		 
+//		 u2_printf("最小值:%0.2f,最大值:%0.2f\r\n",vcc[0],vcc[3]);
+		
+		 
+		 
 //		 u3_printf("YL1*%0.2f*%0.2f*%0.2f%*%0.2f*",test,test+2,test,31);
 		 HAL_ADC_Start_DMA(&hadc1, (uint32_t*)&uhADCxConvertedValue, ADCNB);	
 		}
-
 //		do  
 //		{   
 //			Conf_Read = tmp006_ReadTwoByte(0x02);  
@@ -189,12 +195,12 @@ int main(void)
 //		uartdamget();
 //			temperature=SMBus_ReadTemp();			//读取温度
 //			temperature=memread();
-//					delay_us(1000000);
-		
-		temperature=DS18B20_Get_Temp();		//获取温度
-		u2_printf("测出的温度:%d.%d℃\r\n",temperature/10,temperature%10);
-		
 
+		temperature=DS18B20_Get_Temp();		//获取温度
+//		u2_printf("测出的温度:%d.%d℃\r\n",temperature/10,temperature%10);
+		
+		ds18b20_temp=(double)(temperature/10+0.1*(temperature%10));
+		u2_printf("测出的温度:%0.1f℃\r\n",ds18b20_temp);
 		
 		temp=MPU_Get_Temperature();	//得到温度值
 		u2_printf("tem:%d",temp);
@@ -202,14 +208,17 @@ int main(void)
 		flag=MPU_Get_Accelerometer(&aacx,&aacy,&aacz);	//得到加速度传感器数据
 //		u2_printf("MPU_Get_Accelerometer=%d",flag);
 		u2_printf("aacx=%d,aacy=%d,aacz=%d\r\n",aacx,aacy,aacz);
-		MPU_Get_Gyroscope(&gyrox,&gyroy,&gyroz);	//得到陀螺仪数据
+		MPU_Get_Gyroscope(&gyrox,&gyroy,&gyroz);				//得到陀螺仪数据
 //		u2_printf("MPU_Get_Gyroscope=%d",flag);
 		u2_printf("gyrox=%d,gyroy=%d,gyroz=%d\r\n",aacx,aacy,aacz);		
-		
+
+		u3_printf("BL1*%0.1f*X:%d Y:%d Z:%d*%0.2f\r\n",ds18b20_temp,gyrox,gyroy,gyroz,vcc[0]);
 
 //		flag=mpu_dmp_get_data(&pitch,&roll,&yaw);
 //		u2_printf("flag=%d\r\n",flag);
-		
+
+
+
 //		if(flag==0)
 //	{
 //		u2_printf("success***************************\r\n");

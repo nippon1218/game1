@@ -11,11 +11,9 @@ void DS18B20_IO_OUT(void)
 {
     GPIO_InitTypeDef GPIO_Initure;    
 //    __GPIOC_CLK_ENABLE();            //使能GPIOC时钟
-		
 	    GPIO_Initure.Pin=GPIO_PIN_9;	
     GPIO_Initure.Mode=GPIO_MODE_OUTPUT_PP;   //推挽输出
 //    GPIO_Initure.Pull=GPIO_SPEED_HIGH;           //上拉
-
 //    GPIO_Initure.Speed=GPIO_SPEED_HIGH;      //快速
     HAL_GPIO_Init(GPIOC,&GPIO_Initure);
 }
@@ -24,7 +22,6 @@ void DS18B20_IO_IN(void)
 {
     GPIO_InitTypeDef GPIO_Initure;    
     __GPIOC_CLK_ENABLE();            //使能GPIOC时钟
-
     GPIO_Initure.Pin=GPIO_PIN_9;		
     GPIO_Initure.Mode=GPIO_MODE_INPUT;   //输入浮空
     GPIO_Initure.Pull=GPIO_PULLUP;           //上拉
@@ -60,8 +57,6 @@ u8 DS18B20_Check(void)
     while (!DS18B20_DQIN&&retry<240)
 	{
 		retry++;
-//		for(i=0;i<1;i++)
-//		{;}
 		delay_us(1);
 		DS18B20_DQIN=DS18B20_DQ_Read;
 	};
@@ -76,15 +71,9 @@ u8 DS18B20_Read_Bit(void)
 	DS18B20_IO_OUT();   //设置为输出
   DS18B20_DQ_0; 
 	delay_us(2);
-
-
   DS18B20_DQ_1; 
-	
-	
-	
 	DS18B20_IO_IN();    //设置为输入
 	delay_us(12);				//设置为12us
-
 //	DS18B20_DQIN=DS18B20_DQ_Read;
 	if(DS18B20_DQ_Read==GPIO_PIN_SET)data=1;
   else data=0;
@@ -133,8 +122,6 @@ void DS18B20_Write_Byte(u8 dat)
 }
 
 
-
-
 void DS18B20_Start(void)
 {   						               
     DS18B20_Rst();	   
@@ -149,13 +136,10 @@ u8 DS18B20_Init(void)
     __HAL_RCC_GPIOC_CLK_ENABLE();			//开启GPIOC时钟
 	
     GPIO_Initure.Pin=GPIO_PIN_9;           //PC9
-//	    GPIO_Initure.Pin=GPIO_PIN_10;	
     GPIO_Initure.Mode=GPIO_MODE_OUTPUT_PP;  //推挽输出
     GPIO_Initure.Pull=GPIO_PULLUP;          //上拉
-
     GPIO_Initure.Speed=GPIO_SPEED_HIGH;     //高速
     HAL_GPIO_Init(GPIOC,&GPIO_Initure);     //初始化
- 
  	  DS18B20_Rst();
 	  return DS18B20_Check();
 }
@@ -168,15 +152,10 @@ short DS18B20_Get_Temp(void)
     DS18B20_Start ();        	   //开始转换
     DS18B20_Rst();
 		DS18B20_Check();
-
     DS18B20_Write_Byte(0xcc);   // skip rom
     DS18B20_Write_Byte(0xbe);   // convert	 
-		
     TL=DS18B20_Read_Byte();     // LSB   
- 
     TH=DS18B20_Read_Byte();     // MSB   
-		u2_printf("%d,%d\r\n",TL,TH);
-    
 		if(TH>7)
     {
         TH=~TH;
@@ -186,9 +165,7 @@ short DS18B20_Get_Temp(void)
     tem=TH; //获得高八位
     tem<<=8;    
     tem+=TL;//获得底八位
-
     tem=(short)tem*0.625;//转换     
-
 	if(temp)return tem; //返回温度值
 	else return -tem;    
 }

@@ -2879,7 +2879,10 @@ u8 run_self_test(void)
 	int result;
 	//char test_packet[4] = {0};
 	long gyro[3], accel[3]; 
+	
 	result = mpu_run_self_test(gyro, accel);
+	
+//	u2_printf("result=%d\r\n",result);
 	if (result == 0x3) 
 	{
 		/* Test passed. We can trust the gyro data here, so let's push it down
@@ -2893,6 +2896,7 @@ u8 run_self_test(void)
 		gyro[2] = (long)(gyro[2] * sens);
 		dmp_set_gyro_bias(gyro);
 		mpu_get_accel_sens(&accel_sens);
+//		accel_sens=0;	//---------------这里是自己加的-------------
 		accel[0] *= accel_sens;
 		accel[1] *= accel_sens;
 		accel[2] *= accel_sens;
@@ -2956,32 +2960,23 @@ u8 mpu_dmp_init(void)
 	u8 jpn;
 	IIC_Init(); 		//初始化IIC总线
 	jpn=mpu_init();
-	u2_printf("mpu_init=%d\r\n",jpn);
 	if(jpn==0)	//初始化MPU6050
 	{	 
 		res=mpu_set_sensors(INV_XYZ_GYRO|INV_XYZ_ACCEL);//设置所需要的传感器
-		u2_printf("0=%d\r\n",res);
 		if(res)return 1; 
 		res=mpu_configure_fifo(INV_XYZ_GYRO | INV_XYZ_ACCEL);//设置FIFO
-		u2_printf("1=%d\r\n",res);
 		if(res)return 2; 
 		res=mpu_set_sample_rate(DEFAULT_MPU_HZ);	//设置采样率
-		u2_printf("2=%d\r\n",res);
 		if(res)return 3; 
 		res=dmp_load_motion_driver_firmware();		//加载dmp固件
-		u2_printf("3=%d\r\n",res);
 		if(res)return 4; 
 		res=dmp_set_orientation(inv_orientation_matrix_to_scalar(gyro_orientation));//设置陀螺仪方向
-		u2_printf("4=%d\r\n",res);
 		if(res)return 5; 
 		res=dmp_enable_feature(DMP_FEATURE_6X_LP_QUAT|DMP_FEATURE_TAP|	//设置dmp功能
 		    DMP_FEATURE_ANDROID_ORIENT|DMP_FEATURE_SEND_RAW_ACCEL|DMP_FEATURE_SEND_CAL_GYRO|
 		    DMP_FEATURE_GYRO_CAL);
-		u2_printf("5=%d\r\n",res);
 		if(res)return 6; 
-		u2_printf("6=%d\r\n",res);
 		res=dmp_set_fifo_rate(DEFAULT_MPU_HZ);	//设置DMP输出速率(最大不超过200Hz)
-		u2_printf("7=%d\r\n",res);
 		if(res)return 7;   
 		res=run_self_test();		//自检
 		u2_printf("8=%d\r\n",res);

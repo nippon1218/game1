@@ -82,7 +82,8 @@
 #define u32 uint32_t
 	 
 extern uint8_t rx_len;
-	 
+extern double vcc[CHN];	 
+
 extern uint8_t bootfirst;
 extern uint8_t recv_end_flag;
 extern uint16_t rx_buffer[256];

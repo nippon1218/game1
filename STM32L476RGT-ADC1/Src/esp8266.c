@@ -683,7 +683,7 @@ u8 atk_8266_SET_TCPIP(u16 timeout)
 	  u2_printf("开启单连接失败");	
 	}
 	delay_ms(1200);
-  if(atk_8266_send_cmd("AT+CIPSTART=\"TCP\",\"192.168.1.105\",8086","OK",100))
+  if(atk_8266_send_cmd("AT+CIPSTART=\"TCP\",\"192.168.1.103\",8086","OK",100))
 	{
 	  delay_ms(3000); u2_printf("端口设置成功\r\n");	atk_8266_at_response(1);
 	}
@@ -766,13 +766,13 @@ void ESP8266_STAClient_Init1(u8 n)
 		}
 		delay_ms(1000);	
 		//设置服务器超时时间
-		for(j=0;j<repeat;j++)
-		{
-			if(atk_8266_send_cmd("AT+CIPSTO=500","OK",70))   //发送设置超时时间指令"AT+CIPSTO=500"，并检测返回值是否为“OK”
-				{u2_printf("\r\n连接正常\r\n");break;}
-			else
-				{u2_printf("\r\n连接超时\r\n");}	
-		}
+//		for(j=0;j<repeat;j++)
+//		{
+//			if(atk_8266_send_cmd("AT+CIPSTO=500","OK",70))   //发送设置超时时间指令"AT+CIPSTO=500"，并检测返回值是否为“OK”
+//				{u2_printf("\r\n连接正常\r\n");break;}
+//			else
+//				{u2_printf("\r\n连接超时\r\n");}	
+//		}
 		//u3_printf("YL1*20*14*11*8*"); 
 		//u3_printf("连接成功");                             //发送“连接成功”标识至上位机界面
 	}

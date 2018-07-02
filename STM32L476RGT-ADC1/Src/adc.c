@@ -39,10 +39,10 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "adc.h"
-
+#include "main.h"
 #include "gpio.h"
 #include "dma.h"
-
+#include "usart.h"
 /* USER CODE BEGIN 0 */
 
 /* USER CODE END 0 */
@@ -163,11 +163,6 @@ void MX_ADC1_Init(void)
   {
     _Error_Handler(__FILE__, __LINE__);
   }
-
-
-
-	
-	
 	
 }
 
@@ -271,6 +266,32 @@ u16 adcfilter(u16 number,u8 channel)
 	}
 	return (u32)(sum/number);
 }
+
+
+double Sort(u8 n)
+{
+	u8 i,j;
+	double temp;
+	for(j=0;j<n-1;j++) 
+	{
+    for(i=0;i<n-j-1;i++) 
+		{
+			if(vcc[i]>vcc[i+1])
+			{
+				temp=vcc[i];
+				vcc[i] = vcc[i+1];
+				vcc[i+1] = temp;
+			}
+    }
+  }
+	return vcc[0];
+}
+
+
+
+
+
+
 
 
 /* USER CODE BEGIN 1 */

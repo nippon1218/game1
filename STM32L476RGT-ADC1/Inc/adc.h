@@ -60,6 +60,8 @@ extern ADC_HandleTypeDef hadc1;
 extern void _Error_Handler(char *, int);
 
 void MX_ADC1_Init(void);
+double Sort(u8 n);
+	 
 u16 adcfilter(u16 number,u8 channel);
 /* USER CODE BEGIN Prototypes */
 
