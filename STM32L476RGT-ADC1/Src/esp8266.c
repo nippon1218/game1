@@ -683,7 +683,7 @@ u8 atk_8266_SET_TCPIP(u16 timeout)
 	  u2_printf("开启单连接失败");	
 	}
 	delay_ms(1200);
-  if(atk_8266_send_cmd("AT+CIPSTART=\"TCP\",\"192.168.1.103\",8086","OK",100))
+  if(atk_8266_send_cmd("AT+CIPSTART=\"TCP\",\"192.168.1.101\",8086","OK",100))
 	{
 	  delay_ms(3000); u2_printf("端口设置成功\r\n");	atk_8266_at_response(1);
 	}

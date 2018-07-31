@@ -123,12 +123,12 @@ int main(void)
 	MX_USART3_UART_Init();
 	
 
-	
-	while(MPU1_Init())
-	{
-		u2_printf("MPU_Init()\r\n");
-		delay_us(1000000);
-	}					//初始化MPU6050
+////需要初始化	
+//	while(MPU1_Init())
+//	{
+//		u2_printf("MPU_Init()\r\n");
+//		delay_us(1000000);
+//	}					//初始化MPU6050
 	
 	
 //	while(mpu_dmp_init())
@@ -138,14 +138,16 @@ int main(void)
 //	}
 	
 //	ESP8266_AP_Init(4);
-	
-	ESP8266_STAClient_Init1(4);
-	
-	while(DS18B20_Init())	
-	{
-		u2_printf("no ds18b20\r\n");
-		delay_ms(500);
-	}
+
+////需要初始化	
+//	ESP8266_STAClient_Init1(4);
+	 
+////需要初始化	
+//while(DS18B20_Init())	
+//	{
+//		u2_printf("no ds18b20\r\n");
+//		delay_ms(500);
+//	}
 	
 	HAL_ADCEx_Calibration_Start(&hadc1, ADC_SINGLE_ENDED);
 	HAL_ADC_Start_DMA(&hadc1, (uint32_t*)&uhADCxConvertedValue, ADCNB);
@@ -212,6 +214,7 @@ int main(void)
 //		u2_printf("MPU_Get_Gyroscope=%d",flag);
 		u2_printf("gyrox=%d,gyroy=%d,gyroz=%d\r\n",aacx,aacy,aacz);		
 
+////需要初始化	
 		u3_printf("BL1*%0.1f*X:%d Y:%d Z:%d*%0.2f\r\n",ds18b20_temp,gyrox,gyroy,gyroz,5*(3.3-vcc[0]));
 
 //		flag=mpu_dmp_get_data(&pitch,&roll,&yaw);
